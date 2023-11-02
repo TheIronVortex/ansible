@@ -1,19 +1,42 @@
 ---
 
-- hosts: 192.168.70.133
+- hosts: all
   become: true
   tasks:
 
   - name: update repository index
     apt:
       update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: install apache2 package
     apt:
       name: apache2
       state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: add php support for apache
     apt:
       name: libapache2-mod-php
       state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+
+  - name: install mariadb package
+    pacman:
+      name: mariadb
+      state: latest
+    when: ansible_distribution == "Archlinux"
+
+  - name: add php support for apache
+    pacman:
+      name: mysql
+      state: latest
+    when: ansible_distribution == "Archlinux"
+
+  - name: Enable and start databse
+    systemd:
+      name: mariadb
+      enabled: yes
+      state: started
+    when: ansible_distribution == "Archlinux"
