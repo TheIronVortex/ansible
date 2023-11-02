@@ -14,6 +14,15 @@
       update_cache: yes
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
+  - name: copy website to webserver
+    tags: apache,php,debian
+    copy:
+      src: website/index.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
 - hosts: db_server
   become: true
   tasks:
